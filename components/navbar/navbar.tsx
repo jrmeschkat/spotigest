@@ -9,6 +9,6 @@ interface NavbarProps {
 
 export const Navbar: FunctionComponent<NavbarProps> = ({ children }) => {
   return (
-    <nav className="h-full flex border-l-2 border-slate-800">{children}</nav>
+    <nav className="h-5/6 flex border-l-2 border-slate-800">{children}</nav>
   );
 };

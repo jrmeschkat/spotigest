@@ -6,5 +6,5 @@ export const Input: FunctionComponent<InputProps> = ({
   className,
   ...rest
 }) => {
-  return <input className={`${className} bg-slate-800 rounded-md`} {...rest} />;
+  return <input className={`${className} bg-slate-700 rounded-md`} {...rest} />;
 };

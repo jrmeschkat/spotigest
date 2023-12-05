@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { spotifyRequestExecuter } from "../spotify-request-executer";
+import { getSpotifySDK } from "../getSpotifySDK";
+import { PartialSearchResult } from "@spotify/web-api-ts-sdk";
+
+export type SpotifySearchResult = Required<Pick<PartialSearchResult, "tracks">>;
 
 export async function GET(req: NextRequest) {
   const query = new URL(req.url).searchParams.get("q");
@@ -7,15 +10,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ code: "missing_query" }, { status: 400 });
   }
 
-  const result = await spotifyRequestExecuter.fetchSpotify(
-    `https://api.spotify.com/v1/search?type=track&market=DE&q=${query}`
-  );
+  const sdk = getSpotifySDK();
 
-  if (result.isOk()) {
-    return NextResponse.json(result.value);
+  if (sdk.isErr()) {
+    return NextResponse.json(sdk.error, { status: 500 });
   }
 
-  return NextResponse.json(result.error, {
-    status: result.error.code === "error_fetching_spotify_data" ? 400 : 500,
-  });
+  const result: SpotifySearchResult = await sdk.value.search(
+    query,
+    ["track"],
+    "DE"
+  );
+
+  return NextResponse.json(result);
 }

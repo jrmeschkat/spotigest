@@ -21,7 +21,7 @@ export const SearchbarResult: FunctionComponent<SearchbarResultProps> = ({
 
   return (
     <div
-      className="py-1 w-full flex bg-slate-800 hover:bg-slate-700 cursor-pointer rounded-md h-15 overflow-hidden"
+      className="py-1 flex cursor-pointer h-15 overflow-hidden"
       onClick={handleSelect}
     >
       <img className="h-12 w-12 rounded-sm mx-2 self-center" src={img} />

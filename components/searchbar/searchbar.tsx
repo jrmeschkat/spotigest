@@ -13,9 +13,9 @@ export const Searchbar: FunctionComponent<SearchbarProps> = ({
   children,
 }) => {
   return (
-    <div>
+    <div className="relative">
       <SearchbarInput onInputChanged={onInputChanged} debounce={debounce} />
-      <div className="mt-2 flex flex-col gap-1">{children}</div>
+      <div className="absolute w-full mt-2 flex flex-col bg-slate-700 rounded-md">{children}</div>
     </div>
   );
 };

@@ -3,9 +3,12 @@
 import { Searchbar } from "@/components/searchbar/searchbar";
 import { SearchbarResult } from "@/components/searchbar/searchbar-result";
 import { useState } from "react";
+import { SpotifySearchResult } from "./api/spotify/search/route";
 
 export default function Home() {
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SpotifySearchResult | undefined>(
+    undefined
+  );
 
   const search = async (value: string) => {
     if (value) {
@@ -15,7 +18,7 @@ export default function Home() {
         );
         if (res.ok) {
           const data = await res.json();
-          setResults(data.tracks.items);
+          setResults(data);
         } else {
           const err = await res.json();
           console.error("Error:", err.code);
@@ -28,17 +31,42 @@ export default function Home() {
     <div className="flex flex-col mx-10">
       <h1>Home</h1>
       <Searchbar onInputChanged={search}>
-        {results.map((r) => (
-          <SearchbarResult
-            key={r.id}
-            id={r.id}
-            track={r.name}
-            artist={r.artists[0].name}
-            album={r.album.name}
-            img={r.album.images[2].url}
-          />
-        ))}
+        {results &&
+          results.tracks.items.map((r) => (
+            <SearchbarResult
+              key={r.id}
+              id={r.id}
+              track={r.name}
+              artist={r.artists[0].name}
+              album={r.album.name}
+              img={r.album.images[2].url}
+            />
+          ))}
       </Searchbar>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique vel
+        id enim ut voluptates perspiciatis vero natus laboriosam inventore sint
+        delectus velit expedita, assumenda voluptatem commodi soluta, culpa
+        veniam dolore dolor iure? Vitae rerum a iusto voluptates quam atque eos
+        laborum perspiciatis, exercitationem odio pariatur temporibus omnis
+        animi. Laboriosam a sint autem magnam quisquam quis minima, vero ipsa
+        cupiditate libero? Quasi odit praesentium dignissimos facilis. Sequi
+        inventore est eaque non nam labore? Repellat dignissimos facilis
+        blanditiis nostrum culpa magni officia iusto quidem doloremque corporis
+        laboriosam, fugiat quia architecto est soluta incidunt. Consequuntur id
+        sapiente aspernatur magnam, corrupti nisi debitis dolor numquam a
+        provident ducimus quis maxime! Velit nostrum ab voluptatibus rem,
+        pariatur suscipit, ducimus eos fugiat architecto, magni eveniet ullam
+        quaerat mollitia libero assumenda doloribus quos eius in sunt cupiditate
+        ex expedita tempore possimus. Harum tempora maxime quos a, ut
+        recusandae? Unde exercitationem molestias sunt explicabo illum, minima
+        quas blanditiis dolores ad quasi id eveniet est eius laudantium fuga
+        dicta in excepturi ab aut ratione et quibusdam. A veritatis quia alias
+        ipsum accusamus! Quibusdam quidem aliquid tempore quam cupiditate et
+        voluptas saepe veritatis culpa reiciendis libero explicabo quo sequi
+        aperiam laudantium deleniti, similique facilis! Nobis neque iure culpa
+        facere nulla!
+      </p>
     </div>
   );
 }

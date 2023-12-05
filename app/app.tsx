@@ -24,10 +24,11 @@ export const App: FunctionComponent<AppProps> = ({ children, user }) => {
 
   return (
     <UserContext.Provider value={user}>
-      <header className="bg-slate-900 fixed top-0 w-full h-14 flex">
+      <header className="flex items-center justify-between bg-slate-900 fixed top-0 w-full h-14 flex">
+        <div></div>
         <Navbar>
           <NavbarItem href="/">Home</NavbarItem>
-          <NavbarItem href="admin">Admin</NavbarItem>
+          <NavbarItem href="/admin">Admin</NavbarItem>
           <NavbarItem href="" onClick={handleLogout} requireLoggedIn={true}>
             Logout
           </NavbarItem>
