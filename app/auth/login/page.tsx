@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
+import { makePOSTRequest } from "@/utils/fetch";
 import { useRouter } from "next/navigation";
 import React, { useCallback } from "react";
 
@@ -11,20 +12,15 @@ export default function LoginPage() {
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: e.currentTarget.username.value,
-        }),
+      const res = await makePOSTRequest("/api/auth/login", {
+        username: e.currentTarget.username.value,
       });
 
       const data = await res.json();
 
       if (data.success) {
         router.push("/");
+        router.refresh();
       }
     },
     [router]
@@ -37,7 +33,6 @@ export default function LoginPage() {
         <Input type="text" id="username" name="username" required />
         <Button type="submit">Submit</Button>
       </form>
-      <a href="/">Home</a>
     </div>
   );
 }

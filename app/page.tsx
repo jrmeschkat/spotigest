@@ -9,16 +9,23 @@ export default function Home() {
 
   const search = async (value: string) => {
     if (value) {
-      const res = await fetch(
-        `/api/spotify/search?q=${encodeURIComponent(value)}`
-      );
-      const data = await res.json();
-      setResults(data.tracks.items);
+      try {
+        const res = await fetch(
+          `/api/spotify/search?q=${encodeURIComponent(value)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setResults(data.tracks.items);
+        } else {
+          const err = await res.json();
+          console.error("Error:", err.code);
+        }
+      } catch (error) {}
     }
   };
 
   return (
-    <main className="flex flex-col mx-10">
+    <div className="flex flex-col mx-10">
       <h1>Home</h1>
       <Searchbar onInputChanged={search}>
         {results.map((r) => (
@@ -32,7 +39,7 @@ export default function Home() {
           />
         ))}
       </Searchbar>
-    </main>
+    </div>
   );
 }
 

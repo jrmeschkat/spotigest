@@ -1,35 +1,20 @@
-import { COOKIE } from "@/constants";
-import { serialize } from "cookie";
-import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
-
-const usernames: string[] = [];
-
-const encoder = new TextEncoder();
+import { createCookieHeader } from "../cookie";
 
 export async function POST(req: Request) {
   const { username } = await req.json();
   if (username) {
-    const token = await new SignJWT({ username })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1h")
-      .sign(encoder.encode(process.env.SECRET ?? ""));
+    const cookieHeaderResult = await createCookieHeader(username, false);
 
-    const serialized = serialize(COOKIE, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
-
-    return NextResponse.json(
-      { success: true },
-      { headers: { "Set-Cookie": serialized } }
-    );
+    if (cookieHeaderResult.isOk()) {
+      return NextResponse.json(
+        { success: true },
+        { headers: { "Set-Cookie": cookieHeaderResult.value } }
+      );
+    } else {
+      return NextResponse.json(cookieHeaderResult.error, { status: 500 });
+    }
   } else {
-    return NextResponse.json(
-      { success: false, msg: "username missing" },
-      { status: 400 }
-    );
+    return NextResponse.json({ code: "username_missing" }, { status: 400 });
   }
 }

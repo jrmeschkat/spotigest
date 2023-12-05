@@ -7,9 +7,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ code: "missing_query" }, { status: 400 });
   }
 
-  const res = await spotifyRequestExecuter.fetchSpotify(
+  const result = await spotifyRequestExecuter.fetchSpotify(
     `https://api.spotify.com/v1/search?type=track&market=DE&q=${query}`
   );
 
-  return NextResponse.json(await res.json());
+  if (result.isOk()) {
+    return NextResponse.json(result.value);
+  }
+
+  return NextResponse.json(result.error, {
+    status: result.error.code === "error_fetching_spotify_data" ? 400 : 500,
+  });
 }
