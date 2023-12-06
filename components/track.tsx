@@ -7,7 +7,7 @@ interface TrackProps {
 
 export const Track: FunctionComponent<TrackProps> = ({ track }) => {
   return (
-    <div>
+    <div className="flex">
       <img
         className="h-12 w-12 rounded-sm mx-2 self-center"
         src={

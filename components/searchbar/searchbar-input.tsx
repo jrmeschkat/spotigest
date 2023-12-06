@@ -4,11 +4,13 @@ import { Input } from "../input";
 import { Search } from "lucide-react";
 
 interface SearchbarInputProps {
+  onFocus(): void;
   onInputChanged(value: string): void;
   debounce?: number;
 }
 
 export const SearchbarInput: FunctionComponent<SearchbarInputProps> = ({
+  onFocus,
   onInputChanged,
   debounce: debounceValue = 1000,
 }) => {
@@ -22,13 +24,14 @@ export const SearchbarInput: FunctionComponent<SearchbarInputProps> = ({
 
   return (
     <div className="flex p-1 bg-slate-700 gap-1 items-center rounded-md">
-      <Search className="border-r-2 pr-1 border-slate-800 text-slate-800"/>
+      <Search className="border-r-2 pr-1 border-slate-500 text-slate-500" />
       <Input
-        className="grow"
+        className="grow pl-1"
         type="text"
         id="searchbarInput"
         name="searchbarInput"
         onChange={handleChange}
+        onFocus={onFocus}
       />
     </div>
   );
