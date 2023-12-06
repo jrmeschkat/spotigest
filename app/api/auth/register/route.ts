@@ -1,42 +1,43 @@
-import { NextResponse } from "next/server";
-import { createCookieHeader } from "../cookie";
+import { createUser, getUser } from "@/database/user";
 import { InputError, InternalError } from "@/utils/error";
 import { CredentialsSchema } from "@/utils/schema";
-import { getUser } from "@/database/user";
-import { verifyPassword } from "@/utils/security";
+import { NextRequest, NextResponse } from "next/server";
+import { createCookieHeader } from "../cookie";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const credentials = CredentialsSchema.safeParse(body);
-
     if (!credentials.success) {
       return InputError("invalid_credentials");
     }
-
     const user = await getUser(credentials.data.username);
-
-    if (!user) {
-      return InputError("user_not_found");
+    if (user) {
+      return InputError("username_already_used");
     }
 
-    const validPassword = await verifyPassword(
-      credentials.data.password,
-      user.password
+    const newUserResult = await createUser(
+      credentials.data.username,
+      credentials.data.password
     );
 
-    if (!validPassword) {
-      return InputError("invalid_password");
+    if (newUserResult.isErr()) {
+      return InternalError(newUserResult.error);
     }
+
+    const { value: newUser } = newUserResult;
 
     const cookieHeaderResult = await createCookieHeader(
-      user.username,
-      user.isAdmin
+      newUser.username,
+      newUser.isAdmin
     );
-
     if (cookieHeaderResult.isOk()) {
       return NextResponse.json(
-        { id: user.id, username: user.username, isAdmin: user.isAdmin },
+        {
+          id: newUser.id,
+          username: newUser.username,
+          isAdmin: newUser.isAdmin,
+        },
         { headers: { "Set-Cookie": cookieHeaderResult.value } }
       );
     } else {

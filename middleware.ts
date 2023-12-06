@@ -12,7 +12,7 @@ async function hasValidToken(req: NextRequest): Promise<Result<IUser, any>> {
     if (token) {
       const jwt = await jwtVerify(
         token.value,
-        encoder.encode(process.env.SECRET ?? "")
+        encoder.encode(process.env.JWT_SECRET ?? "")
       );
       if (jwt.payload) {
         return ok(jwt.payload as unknown as IUser);
